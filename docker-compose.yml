@@ -1,0 +1,28 @@
+version: "3"
+services:
+  under-db:
+    container_name: under-db
+    networks: 
+      - under-net
+    env_file:
+      - ./.env
+    volumes:
+      - ./volume/db:/data/postgres
+    image: 'postgres:9.6.17-alpine'
+    ports:
+      - '5432:5432'
+      
+  flyway:
+    image: boxfuse/flyway:5.2.4
+    command: -connectRetries=60 baseline migrate info
+    volumes:
+      - ./resources/db/sql:/flyway/sql
+      - ./resources/db/flyway/conf:/flyway/conf
+    depends_on:
+      - under-db
+    networks:
+      - under-net
+
+
+networks:
+  under-net:
