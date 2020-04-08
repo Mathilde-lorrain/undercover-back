@@ -3,3 +3,8 @@ spring:
     url: ${DS_URL:jdbc:postgresql://localhost:5432/under-db}
     username: ${POSTGRES_USER:root}
     password: ${POSTGRES_PASSWORD:root}
+  jpa:
+    properties:
+      hibernate:
+        format-sql: true
+    show-sql: true

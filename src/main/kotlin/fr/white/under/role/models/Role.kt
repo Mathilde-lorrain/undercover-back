@@ -1,18 +1,24 @@
 package fr.white.under.role.models
 
 import fr.white.under.game.models.Game
-import fr.white.under.player.models.Player
+import fr.white.under.user.models.User
+import javax.persistence.*
 
-class Role {
+@Entity
+data class Role(
+        @Id
+        @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "role_id_seq")
+        val id: Long?,
 
-    val id: Int? = null
+        @ManyToOne
+        val user: User,
 
-    lateinit var player: Player
+        @ManyToOne
+        val game: Game,
 
-    lateinit var game: Game
+        @Column
+        var roleType: RoleType = RoleType.NONE,
 
-    var roleType = RoleType.NONE
-
-    var alive = true
-
-}
+        @Column
+        var alive: Boolean = true
+)
