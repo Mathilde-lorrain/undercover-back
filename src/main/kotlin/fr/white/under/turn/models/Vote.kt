@@ -1,12 +1,20 @@
 package fr.white.under.turn.models
 
-import fr.white.under.player.models.Player
+import fr.white.under.role.models.Role
+import javax.persistence.*
 
-class Vote {
+@Entity
+data class Vote(
+        @Id
+        @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vote_id_seq")
+        val id: Long,
 
-    lateinit var turn: Turn
+        @ManyToOne
+        val turn: Turn,
 
-    lateinit var player: Player
+        @ManyToOne
+        val voter: Role,
 
-    lateinit var target: Player
-}
+        @ManyToOne
+        val target: Role
+)

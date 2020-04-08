@@ -2,19 +2,24 @@ package fr.white.under.game.models
 
 import fr.white.under.role.models.Role
 import fr.white.under.turn.models.Turn
+import javax.persistence.*;
 
-class Game{
+@Entity
+data class Game(
+        @Id
+        @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "game_id_seq")
+        val id: Long,
 
-    var id: Int? = null
+        @Column
+        var status: GameStatus = GameStatus.LOBBY,
 
-    var status = GameStatus.LOBBY;
+        @OneToMany(mappedBy = "game")
+        val roles: MutableList<Role> = mutableListOf(),
 
-    var roles = mutableListOf<Role>()
+        @OneToMany(mappedBy = "game")
+        val turns: MutableList<Turn> = mutableListOf()
+)
 
-    var turns = mutableListOf<Turn>()
-
-}
-
-enum class GameStatus{
+enum class GameStatus {
     LOBBY, STARTED, OVER
 }

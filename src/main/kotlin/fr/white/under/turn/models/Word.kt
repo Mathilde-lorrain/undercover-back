@@ -1,12 +1,20 @@
 package fr.white.under.turn.models
 
-import fr.white.under.player.models.Player
+import fr.white.under.role.models.Role
+import javax.persistence.*
 
-class Word{
+@Entity
+data class Word(
+        @Id
+        @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "word_id_seq")
+        val id: Long?,
 
-    lateinit var turn: Turn
+        @ManyToOne
+        val turn: Turn,
 
-    lateinit var player: Player
+        @ManyToOne
+        val role: Role,
 
-    lateinit var word: String
-}
+        @Column
+        val word: String
+)
