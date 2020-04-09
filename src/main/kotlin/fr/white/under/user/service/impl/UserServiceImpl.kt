@@ -8,6 +8,10 @@ import org.springframework.stereotype.Service
 @Service
 class UserServiceImpl(private val userDao: UserDao) : UserService {
 
+    override fun findByName(playerName: String): User {
+        return userDao.findByName(playerName)
+    }
+
     override fun getOne(playerId: Long): User {
         return userDao.getOne(playerId)
     }

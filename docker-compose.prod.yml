@@ -1,0 +1,7 @@
+version: "3"
+services:
+  under-app:
+    image: registry.gitlab.com/mathildelorrain/undercover_back/backend-undercovid:${TAG}
+    restart: unless-stopped
+  under-db:
+    restart: unless-stopped

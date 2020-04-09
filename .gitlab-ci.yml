@@ -1,0 +1,78 @@
+variables:
+  STORE_APP: "./"
+  MAVEN_IMAGE: "maven:3.6.1-jdk-13"
+  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+  DOCKER_IMAGE: "docker:18.09.7"
+  DOCKER_IN_DOCKER_IMAGE: ${DOCKER_IMAGE}-dind
+  DOCKER_DRIVER: overlay2
+  STAGING_HOST: mlorrain-build.takima.io
+
+
+stages: # Declared stage order is execution order
+  - build
+  - test
+  - package
+  - deploy
+
+# Jobs definition
+# build
+backend:build:
+  image: $MAVEN_IMAGE
+  stage: build
+  cache:
+    paths:
+      - .m2/repository
+      - $STORE_APP/target/
+  artifacts:
+    paths:
+      - $STORE_APP/target/*.jar
+    expire_in: 1h
+  script:
+    - mvn clean package -f $STORE_APP -DskipTests
+  
+backend:package:
+  image: $DOCKER_IMAGE
+  stage: package
+  services:
+    - $DOCKER_IN_DOCKER_IMAGE
+  dependencies:
+    - backend:build # Download jar from build stages
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker pull $CI_REGISTRY_IMAGE/backend-undercovid:latest || true
+    - docker build -f $STORE_APP/Dockerfile.prod --cache-from $CI_REGISTRY_IMAGE/backend-undercovid:latest -t $CI_REGISTRY_IMAGE/backend-undercovid:$CI_COMMIT_REF_NAME -t $CI_REGISTRY_IMAGE/backend-undercovid:latest $STORE_APP
+    - docker push $CI_REGISTRY_IMAGE/backend-undercovid:$CI_COMMIT_REF_NAME
+    - docker push $CI_REGISTRY_IMAGE/backend-undercovid:latest
+
+backend:staging:
+  stage: deploy
+  before_script:
+    - 'which ssh-agent || ( apk update && apk add openssh-client )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEYS" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan $STAGING_HOST >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  variables:
+    TAG: "$CI_COMMIT_REF_NAME"
+  script:
+    # Copying compose files over the server (we don't need the whole Git repo)
+    - scp -P 22 -r docker-compose.yml docker-compose.prod.yml centos@$STAGING_HOST:~/undercovid/
+    - scp -P 22 -r resources/db/sql centos@$STAGING_HOST:~/undercovid/resources/db/
+    - scp -P 22 $STAGING_ENV centos@$STAGING_HOST:~/undercovid/.env
+    - ssh centos@$STAGING_HOST "echo TAG=$TAG >> ~/undercovid/.env"
+    - scp -p22 $CONF_FLYWAY centos@$STAGING_HOST:~/undercovid/resources/db/flyway/conf/flyway.conf
+    # Deployment
+    - ssh centos@$STAGING_HOST "docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY"
+    - ssh centos@$STAGING_HOST "docker-compose -f ~/undercovid/docker-compose.yml -f ~/undercovid/docker-compose.prod.yml pull under-app under-db"
+    - ssh centos@$STAGING_HOST "docker-compose -f ~/undercovid/docker-compose.yml -f ~/undercovid/docker-compose.prod.yml up -d --force-recreate --no-build under-db"
+    - ssh centos@$STAGING_HOST "docker-compose -f ~/undercovid/docker-compose.yml -f ~/undercovid/docker-compose.prod.yml up  --force-recreate --no-build flyway"
+    - ssh centos@$STAGING_HOST "docker-compose -f ~/undercovid/docker-compose.yml -f ~/undercovid/docker-compose.prod.yml up  -d --force-recreate --no-build under-app"
+  only:
+    - develop
+    - master
+    - prod
+    
+

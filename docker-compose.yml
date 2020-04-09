@@ -10,7 +10,7 @@ services:
       - ./volume/db:/data/postgres
     image: 'postgres:9.6.17-alpine'
     ports:
-      - '5432:5432'
+      - 5432:5432
       
   flyway:
     image: boxfuse/flyway:5.2.4
@@ -23,6 +23,17 @@ services:
     networks:
       - under-net
 
+  under-app:
+    container_name: under-app
+    restart: always
+    build:
+      context: ./
+    env_file:
+       - .env
+    ports:
+       - 8080:8080
+    networks:
+       - under-net
 
 networks:
   under-net:
