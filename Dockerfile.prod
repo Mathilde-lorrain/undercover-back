@@ -1,0 +1,11 @@
+FROM openjdk:13
+ENV CDB_HOME /opt/cdb
+ENV DB_HOST=under-db
+ENV DB_PORT=5432
+WORKDIR $CDB_HOME
+
+ADD https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh wait-for-it.sh
+RUN chmod +x ./wait-for-it.sh
+COPY target/*.jar $CDB_HOME/under.jar
+
+ENTRYPOINT bash ./wait-for-it.sh -t 30 ${DB_HOST}:$DB_PORT -- java -jar under.jar

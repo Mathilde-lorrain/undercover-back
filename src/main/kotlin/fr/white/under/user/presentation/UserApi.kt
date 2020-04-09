@@ -5,7 +5,8 @@ import fr.white.under.user.service.UserService
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/player")
+@RequestMapping("/users")
+@CrossOrigin
 class UserApi(private val userService: UserService) {
 
     @PostMapping()
