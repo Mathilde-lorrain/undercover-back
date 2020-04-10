@@ -7,13 +7,13 @@ import javax.persistence.*
 data class User(
         @Id
         @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_id_seq")
-        val id: Long?=null ,
+        val id: Long?,
 
         @Column
-        val name: String="",
+        val name: String,
 
         @Column
-        val password: String="",
+        val password: String,
 
         @OneToMany(mappedBy = "user")
         val roles: MutableList<Role> = mutableListOf()
