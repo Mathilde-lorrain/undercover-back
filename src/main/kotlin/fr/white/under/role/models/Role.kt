@@ -16,7 +16,7 @@ data class Role(
         @ManyToOne
         val game: Game,
 
-        @Column
+        @Enumerated(EnumType.STRING)
         var roleType: RoleType = RoleType.NONE,
 
         @Column
