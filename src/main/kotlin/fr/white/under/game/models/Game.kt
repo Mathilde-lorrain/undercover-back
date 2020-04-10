@@ -10,7 +10,7 @@ data class Game(
         @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "game_id_seq")
         val id: Long,
 
-        @Column
+        @Enumerated(EnumType.STRING)
         var status: GameStatus = GameStatus.LOBBY,
 
         @OneToMany(mappedBy = "game")
