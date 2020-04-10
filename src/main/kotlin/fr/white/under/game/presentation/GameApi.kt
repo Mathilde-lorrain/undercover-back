@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/game")
+@CrossOrigin
 class GameApi(private val gameService: GameService) {
 
     @PostMapping()
