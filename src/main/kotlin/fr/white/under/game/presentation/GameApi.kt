@@ -5,7 +5,7 @@ import fr.white.under.game.service.GameService
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/game")
+@RequestMapping("/api/games")
 @CrossOrigin
 class GameApi(private val gameService: GameService) {
 
@@ -16,7 +16,7 @@ class GameApi(private val gameService: GameService) {
 
     @GetMapping("{id}")
     fun getOne(@PathVariable id: Long): Game {
-        return gameService.getOne(id);
+        return gameService.findById(id);
     }
 
 }

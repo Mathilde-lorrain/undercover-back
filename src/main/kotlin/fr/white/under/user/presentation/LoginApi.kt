@@ -5,7 +5,7 @@ import fr.white.under.user.service.UserService
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/login")
+@RequestMapping("/api/login")
 @CrossOrigin
 class LoginApi(private val userService: UserService) {
 

@@ -1,5 +1,6 @@
 package fr.white.under.role.models
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import fr.white.under.game.models.Game
 import fr.white.under.user.models.User
 import javax.persistence.*
@@ -14,6 +15,7 @@ data class Role(
         val user: User,
 
         @ManyToOne
+        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
         val game: Game,
 
         @Enumerated(EnumType.STRING)

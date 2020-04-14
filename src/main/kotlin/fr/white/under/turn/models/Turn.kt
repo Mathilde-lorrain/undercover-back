@@ -1,5 +1,6 @@
 package fr.white.under.turn.models
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import fr.white.under.game.models.Game
 import fr.white.under.role.models.Role
 import javax.persistence.*
@@ -13,15 +14,15 @@ data class Turn(
         @Column
         val turnNumber: Int,
 
-        @OneToMany(mappedBy = "turn")
+        @OneToMany
         val votes: MutableList<Vote> = mutableListOf(),
 
-        @OneToMany(mappedBy = "turn")
+        @OneToMany
         val words: MutableList<Word> = mutableListOf(),
 
-        @ManyToOne
+        @ManyToOne(cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH])
         val game: Game,
 
-        @ManyToOne
+        @ManyToOne(cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH])
         val killedPlayer: Role?
 )

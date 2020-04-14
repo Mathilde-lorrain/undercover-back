@@ -1,7 +1,9 @@
 CREATE TABLE public.game
 (
-  id        BIGSERIAL PRIMARY KEY,
-  status    VARCHAR NOT NULL
+  id                BIGSERIAL PRIMARY KEY,
+  status            VARCHAR NOT NULL,
+  civil_word        VARCHAR,
+  undercover_word   VARCHAR
 );
 
 CREATE TABLE public.users
