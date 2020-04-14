@@ -63,6 +63,7 @@ backend:staging:
     - scp -P 22 -r resources/db/sql centos@$STAGING_HOST:~/undercovid/resources/db/
     - scp -P 22 $STAGING_ENV centos@$STAGING_HOST:~/undercovid/.env
     - ssh centos@$STAGING_HOST "echo TAG=$TAG >> ~/undercovid/.env"
+    - ssh centos@$STAGING_HOST "echo TAG=$TAG >> .env"
     - scp -p22 $CONF_FLYWAY centos@$STAGING_HOST:~/undercovid/resources/db/flyway/conf/flyway.conf
     # Deployment
     - ssh centos@$STAGING_HOST "docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY"

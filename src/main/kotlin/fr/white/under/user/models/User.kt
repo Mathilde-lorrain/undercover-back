@@ -1,5 +1,7 @@
 package fr.white.under.user.models
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonProperty
 import fr.white.under.role.models.Role
 import javax.persistence.*
 
@@ -10,11 +12,13 @@ data class User(
         val id: Long?,
 
         @Column
-        val name: String,
+        val name: String?,
 
         @Column
-        val password: String,
+        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+        val password: String?,
 
         @OneToMany(mappedBy = "user")
+        @JsonIgnore
         val roles: MutableList<Role> = mutableListOf()
 )

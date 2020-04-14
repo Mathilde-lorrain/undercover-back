@@ -1,5 +1,6 @@
 package fr.white.under.game.models
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import fr.white.under.role.models.Role
 import fr.white.under.turn.models.Turn
 import javax.persistence.*;
@@ -13,10 +14,17 @@ data class Game(
         @Enumerated(EnumType.STRING)
         var status: GameStatus = GameStatus.LOBBY,
 
-        @OneToMany(mappedBy = "game")
+        @Column
+        var civilWord: String = "",
+
+        @Column
+        var undercoverWord: String = "",
+
+        @OneToMany(mappedBy = "game", fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
         val roles: MutableList<Role> = mutableListOf(),
 
-        @OneToMany(mappedBy = "game")
+        @JsonIgnore
+        @OneToMany(mappedBy = "game", cascade = [CascadeType.ALL])
         val turns: MutableList<Turn> = mutableListOf()
 )
 

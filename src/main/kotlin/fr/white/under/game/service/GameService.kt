@@ -4,5 +4,7 @@ import fr.white.under.game.models.Game
 
 interface GameService {
     fun save(game: Game): Game
-    fun getOne(gameId: Long): Game
+    fun findById(gameId: Long): Game
+    fun giveRole(game: Game)
+    fun giveWord(game: Game)
 }

@@ -5,7 +5,7 @@ import fr.white.under.user.service.UserService
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 @CrossOrigin
 class UserApi(private val userService: UserService) {
 
