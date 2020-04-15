@@ -25,6 +25,6 @@ class GameSocketController(val template: SimpMessagingTemplate, private val user
          val game = gameService.findById(gameId)
          gameService.giveRole(game)
          gameService.giveWord(game)
-         template.convertAndSend("/app/games/$gameId/users", game)
+         template.convertAndSend("/app/games/$gameId", game)
     }
 }
