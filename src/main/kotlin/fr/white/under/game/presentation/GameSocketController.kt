@@ -20,7 +20,7 @@ class GameSocketController(val template: SimpMessagingTemplate, private val user
         template.convertAndSend("/app/games/$gameId/users", userService.getNameById(role.user.id!!))
     }
 
-    @MessageMapping("/app/games/{id}")
+    @MessageMapping("/app/games/{gameId}")
     fun onStartGame(@DestinationVariable gameId: Long) {
          val game = gameService.findById(gameId)
          gameService.giveRole(game)
