@@ -10,7 +10,7 @@ data class Vote(
         @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vote_id_seq")
         val id: Long,
 
-        @ManyToOne(cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH])
+        @ManyToOne
         val turn: Turn,
 
         @ManyToOne

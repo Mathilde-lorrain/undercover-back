@@ -14,15 +14,15 @@ data class Turn(
         @Column
         val turnNumber: Int,
 
-        @OneToMany
+        @OneToMany(mappedBy = "turn")
         val votes: MutableList<Vote> = mutableListOf(),
 
-        @OneToMany
+        @OneToMany(mappedBy = "turn")
         val words: MutableList<Word> = mutableListOf(),
 
         @ManyToOne(cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH])
-        val game: Game,
+        val game: Game?,
 
         @ManyToOne(cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH])
-        val killedPlayer: Role?
+        var killedPlayer: Role?
 )

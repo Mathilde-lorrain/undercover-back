@@ -2,27 +2,28 @@ package fr.white.under.turn.presentation
 
 import fr.white.under.turn.models.Vote
 import fr.white.under.turn.models.Word
+import fr.white.under.turn.service.TurnService
 import org.springframework.messaging.handler.annotation.DestinationVariable
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.stereotype.Controller
 import org.springframework.messaging.simp.SimpMessagingTemplate
 
 @Controller
-class TurnSocketController(val template: SimpMessagingTemplate) {
+class TurnSocketController(val template: SimpMessagingTemplate, private val turnService: TurnService) {
 
     @MessageMapping("/app/games/{gameId}/words")
     fun onWordReceived(@DestinationVariable gameId: Long, word: Word) {
-        //TODO wordService.save(word)
+        turnService.save(word)
         template.convertAndSend("/app/games/$gameId/words", word)
     }
 
-    @MessageMapping("/app/games/{gameId}/turns")
+    @MessageMapping("/app/games/{gameId}/votes")
     fun onVoteReceived(@DestinationVariable gameId: Long, vote: Vote) {
-        //TODO voteService.save(vote)
-        if(vote.isLast){
-            //TODO voteService.whoIsEliminated(vote.turn.id)
-            template.convertAndSend("/app/games/$gameId/turns", "eliminatedPlayer")
-        }
+        turnService.save(vote)
         template.convertAndSend("/app/games/$gameId/votes", vote)
+
+        if (vote.isLast) {
+            template.convertAndSend("/app/games/$gameId/turns", turnService.endTurn(vote.turn.id!!))
+        }
     }
 }

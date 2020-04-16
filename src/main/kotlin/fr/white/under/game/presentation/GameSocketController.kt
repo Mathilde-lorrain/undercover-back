@@ -15,16 +15,14 @@ import org.springframework.web.bind.annotation.CrossOrigin
 class GameSocketController(val template: SimpMessagingTemplate, private val userService: UserService, private val gameService: GameService, private val roleService: RoleService) {
 
     @MessageMapping("/app/games/{gameId}/roles")
-    fun onAddPlayer(@DestinationVariable gameId: Long, role: Role) {
+    fun onPlayerJoined(@DestinationVariable gameId: Long, role: Role) {
         roleService.save(role)
-        template.convertAndSend("/app/games/$gameId/users", userService.getNameById(role.user.id!!))
+        template.convertAndSend("/app/games/$gameId/users", userService.getNameById(role.user!!.id!!))
     }
 
     @MessageMapping("/app/games/{gameId}")
-    fun onStartGame(@DestinationVariable gameId: Long) {
-         val game = gameService.findById(gameId)
-         gameService.giveRole(game)
-         gameService.giveWord(game)
+    fun onGameStarted(@DestinationVariable gameId: Long) {
+         val game = gameService.init(gameId)
          template.convertAndSend("/app/games/$gameId", game)
     }
 }
