@@ -3,6 +3,8 @@ package fr.white.under.game.models
 import com.fasterxml.jackson.annotation.JsonIgnore
 import fr.white.under.role.models.Role
 import fr.white.under.turn.models.Turn
+import org.hibernate.annotations.LazyCollection
+import org.hibernate.annotations.LazyCollectionOption
 import javax.persistence.*;
 
 @Entity
@@ -20,10 +22,11 @@ data class Game(
         @Column
         var undercoverWord: String = "",
 
-        @OneToMany(mappedBy = "game", fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
+        @LazyCollection(LazyCollectionOption.FALSE)
+        @OneToMany(mappedBy = "game", cascade = [CascadeType.ALL])
         val roles: MutableList<Role> = mutableListOf(),
 
-        @JsonIgnore
+        @LazyCollection(LazyCollectionOption.FALSE)
         @OneToMany(mappedBy = "game", cascade = [CascadeType.ALL])
         val turns: MutableList<Turn> = mutableListOf()
 )
