@@ -1,3 +1,4 @@
+
 CREATE TABLE public.game
 (
   id                BIGSERIAL PRIMARY KEY,

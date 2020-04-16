@@ -15,12 +15,15 @@ data class Turn(
         val turnNumber: Int,
 
         @OneToMany(mappedBy = "turn")
+        @JsonIgnore
         val votes: MutableList<Vote> = mutableListOf(),
 
         @OneToMany(mappedBy = "turn")
+        @JsonIgnore
         val words: MutableList<Word> = mutableListOf(),
 
         @ManyToOne(cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH])
+        @JsonIgnore
         val game: Game?,
 
         @ManyToOne(cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH])
