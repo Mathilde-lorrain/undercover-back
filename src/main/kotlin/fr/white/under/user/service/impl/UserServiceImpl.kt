@@ -14,7 +14,7 @@ open class UserServiceImpl(private val userDao: UserDao) : UserService {
     }
 
     override fun getNameById(userId: Long): String {
-        return userDao.getNameById(userId)
+        return userDao.findNameById(userId)
     }
 
     override fun findByName(playerName: String): User {

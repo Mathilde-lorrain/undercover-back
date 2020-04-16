@@ -9,7 +9,7 @@ import javax.persistence.*;
 data class Game(
         @Id
         @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "game_id_seq")
-        val id: Long,
+        val id: Long?,
 
         @Enumerated(EnumType.STRING)
         var status: GameStatus = GameStatus.LOBBY,
@@ -29,5 +29,5 @@ data class Game(
 )
 
 enum class GameStatus {
-    LOBBY, STARTED, OVER
+    LOBBY, PLAYING, OVER
 }

@@ -12,11 +12,11 @@ data class Role(
         val id: Long?,
 
         @ManyToOne
-        val user: User,
+        val user: User?,
 
         @ManyToOne
         @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-        val game: Game,
+        val game: Game?,
 
         @Enumerated(EnumType.STRING)
         var roleType: RoleType = RoleType.NONE,

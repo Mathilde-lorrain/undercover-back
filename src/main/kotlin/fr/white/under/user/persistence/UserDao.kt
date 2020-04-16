@@ -11,5 +11,5 @@ interface UserDao {
     fun findByName(playerName: String): User
     fun findById(userId: Long): User
     @Query("select u.name from users u where u.id = (:userId)")
-    fun getNameById(@Param("userId") userId: Long): String
+    fun findNameById(@Param("userId") userId: Long): String
 }
