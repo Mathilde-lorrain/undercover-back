@@ -14,13 +14,11 @@ class TurnSocketController(val template: SimpMessagingTemplate, private val turn
     @MessageMapping("/app/games/{gameId}/words")
     fun onWordReceived(@DestinationVariable gameId: Long, word: Word) {
         turnService.save(word)
-        template.convertAndSend("/app/games/$gameId/words", word)
     }
 
     @MessageMapping("/app/games/{gameId}/votes")
     fun onVoteReceived(@DestinationVariable gameId: Long, vote: Vote) {
         turnService.save(vote)
-        template.convertAndSend("/app/games/$gameId/votes", vote)
 
         if (vote.isLast) {
             template.convertAndSend("/app/games/$gameId/turns", turnService.endTurn(vote.turn.id!!))
