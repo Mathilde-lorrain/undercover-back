@@ -26,6 +26,7 @@ data class Game(
         @OneToMany(mappedBy = "game", cascade = [CascadeType.ALL])
         val roles: MutableList<Role> = mutableListOf(),
 
+
         @LazyCollection(LazyCollectionOption.FALSE)
         @OneToMany(mappedBy = "game", cascade = [CascadeType.ALL])
         val turns: MutableList<Turn> = mutableListOf()
