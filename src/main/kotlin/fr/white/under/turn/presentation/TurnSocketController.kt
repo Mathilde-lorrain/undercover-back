@@ -19,7 +19,6 @@ class TurnSocketController(val template: SimpMessagingTemplate, private val turn
     @MessageMapping("/app/games/{gameId}/votes")
     fun onVoteReceived(@DestinationVariable gameId: Long, vote: Vote) {
         turnService.save(vote)
-
         if (vote.isLast) {
             template.convertAndSend("/app/games/$gameId/turns", turnService.endTurn(vote.turn.id!!))
         }

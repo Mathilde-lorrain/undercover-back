@@ -1,6 +1,5 @@
 package fr.white.under.turn.service
 
-import fr.white.under.role.models.Role
 import fr.white.under.turn.models.Turn
 import fr.white.under.turn.models.Vote
 import fr.white.under.turn.models.Word
