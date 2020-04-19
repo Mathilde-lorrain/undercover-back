@@ -22,5 +22,8 @@ data class Role(
         var roleType: RoleType = RoleType.NONE,
 
         @Column
-        var alive: Boolean = true
+        var alive: Boolean = true,
+
+        @Column
+        var hasWon: Boolean = false
 )
