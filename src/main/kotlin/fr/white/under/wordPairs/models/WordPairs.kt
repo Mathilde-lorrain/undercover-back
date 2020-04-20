@@ -6,7 +6,7 @@ import javax.persistence.*
 @Entity
 data class WordPairs(
         @Id
-        @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "word_peers_id_seq")
+        @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "word_pairs_id_seq")
         val id: Long?,
 
         val word1: String,
