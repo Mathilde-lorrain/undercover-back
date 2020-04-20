@@ -8,6 +8,10 @@ import org.springframework.stereotype.Service
 @Service
 open class WordPairsServiceImpl(private val wordPairsDao: WordPairsDao) : WordPairsService {
 
+    override fun findRandomOne(): WordPairs {
+       return wordPairsDao.findRandomOne()
+    }
+
     override fun save(wordPairs: WordPairs): WordPairs {
         return wordPairsDao.save(wordPairs)
     }
