@@ -4,6 +4,7 @@ import fr.white.under.game.models.Game
 import fr.white.under.game.models.GameStatus
 import fr.white.under.game.persistence.GameDao
 import fr.white.under.game.service.GameService
+import fr.white.under.game.service.WordPairsService
 import fr.white.under.role.models.RoleType
 import fr.white.under.turn.service.TurnService
 import org.springframework.stereotype.Service
@@ -11,7 +12,7 @@ import javax.transaction.Transactional
 import kotlin.random.Random
 
 @Service
-open class GameServiceImpl(private val gameDao: GameDao, private val turnService: TurnService) : GameService {
+open class GameServiceImpl(private val gameDao: GameDao, private val turnService: TurnService, private val wordPairsService: WordPairsService) : GameService {
 
     override fun findById(gameId: Long): Game {
         return gameDao.findById(gameId)
@@ -50,7 +51,8 @@ open class GameServiceImpl(private val gameDao: GameDao, private val turnService
     }
 
     private fun giveWord(game: Game) {
-        game.civilWord = "chien"
-        game.undercoverWord = "chat"
+        wordPairsService.findRandomOne()
+        game.civilWord = wordPairsService.findRandomOne().word1
+        game.undercoverWord = wordPairsService.findRandomOne().word2
     }
 }
