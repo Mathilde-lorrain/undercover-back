@@ -20,7 +20,8 @@ CREATE TABLE public.role
     user_id     BIGINT      NOT NULL REFERENCES users(id),
     game_id     BIGINT      NOT NULL REFERENCES game(id),
     role_type   VARCHAR     NOT NULL,
-    alive       BOOLEAN
+    alive       BOOLEAN,
+    hasWon       BOOLEAN
 );
 
 CREATE TABLE public.turn

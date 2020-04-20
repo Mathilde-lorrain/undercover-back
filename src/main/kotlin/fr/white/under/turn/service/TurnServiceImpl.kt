@@ -1,11 +1,7 @@
 package fr.white.under.turn.service
 
-import com.fasterxml.jackson.annotation.JsonView
 import fr.white.under.game.models.Game
-import fr.white.under.game.persistence.GameDao
-import fr.white.under.game.service.GameService
 import fr.white.under.role.models.Role
-import fr.white.under.role.models.RoleType
 import fr.white.under.turn.models.Turn
 import fr.white.under.turn.models.Vote
 import fr.white.under.turn.models.Word
@@ -45,6 +41,7 @@ open class TurnServiceImpl(
         turn.killedPlayer = killedPlayer
 
         val winners = getWinnersPlayer(turn.game!!.roles)
+        winners.forEach { r -> r.hasWon = true }
 
         val newTurn = newTurn(turn.game!!.id!!, turn.turnNumber + 1)
         val turnWinnersId = winners.map { r -> r.id }.toMutableList()
@@ -53,11 +50,11 @@ open class TurnServiceImpl(
     }
 
 
-    private fun getWinnersPlayer(roles : MutableList<Role>): MutableList<Role> {
+    private fun getWinnersPlayer(roles: MutableList<Role>): MutableList<Role> {
         var alive = roles.filter { r -> r.alive }
         var aliveDistinct = alive.distinctBy { r -> r.roleType }
         var roleTypeWinners = aliveDistinct.filter { r -> r.roleType.hasWon(roles) }.map { r -> r.roleType }
-        return alive.filter { r -> roleTypeWinners.contains(r.roleType)}.toMutableList()
+        return alive.filter { r -> roleTypeWinners.contains(r.roleType) }.toMutableList()
     }
 
     private fun getEliminatedPlayer(votes: MutableList<Vote>): Role {
