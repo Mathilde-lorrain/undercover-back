@@ -51,8 +51,8 @@ open class GameServiceImpl(private val gameDao: GameDao, private val turnService
     }
 
     private fun giveWord(game: Game) {
-        wordPairsService.findRandomOne()
-        game.civilWord = wordPairsService.findRandomOne().word1
-        game.undercoverWord = wordPairsService.findRandomOne().word2
+        val randomWord =  wordPairsService.findRandomOne()
+        game.civilWord = randomWord.word1
+        game.undercoverWord = randomWord.word2
     }
 }
