@@ -23,4 +23,9 @@ class TurnSocketController(val template: SimpMessagingTemplate, private val turn
             template.convertAndSend("/app/games/$gameId/turns", turnService.endTurn(vote.turn.id!!))
         }
     }
+
+    @MessageMapping("/app/games/{gameId}/words/mrWhite")
+    fun onWordReceivedMrWhite(@DestinationVariable gameId: Long, word: Word) {
+        template.convertAndSend("/app/games/$gameId/turns", turnService.checkMWhiteWord(gameId, word))
+    }
 }
