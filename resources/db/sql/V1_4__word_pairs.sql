@@ -5,4 +5,4 @@ CREATE TABLE public.word_pairs
     word2   VARCHAR
 );
 
-ALTER SEQUENCE word_pairs_id_seq INCREMENT BY 50;
+ALTER SEQUENCE word_pairs_id_seq START 100 INCREMENT BY 50;
