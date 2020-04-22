@@ -13,6 +13,8 @@ open class WordPairsServiceImpl(private val wordPairsDao: WordPairsDao) : WordPa
     }
 
     override fun save(wordPairs: WordPairs): WordPairs {
+        wordPairs.word1 = wordPairs.word1.toLowerCase()
+        wordPairs.word2 = wordPairs.word2.toLowerCase()
         return wordPairsDao.save(wordPairs)
     }
 

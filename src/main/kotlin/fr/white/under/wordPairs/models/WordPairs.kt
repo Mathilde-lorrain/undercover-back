@@ -9,7 +9,7 @@ data class WordPairs(
         @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "word_pairs_id_seq")
         val id: Long?,
 
-        val word1: String,
+        var word1: String,
 
-        val word2: String
+        var word2: String
 )

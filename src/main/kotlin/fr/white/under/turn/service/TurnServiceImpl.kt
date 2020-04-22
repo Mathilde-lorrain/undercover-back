@@ -60,7 +60,7 @@ open class TurnServiceImpl(
         val mrWhiteId = word.role.id
         val winners = mutableListOf<Long?>()
         val role = game.roles.filter { r ->r.id == mrWhiteId }
-        if (word.word == game.civilWord) {
+        if (word.word.toLowerCase() == game.civilWord) {
             role[0].hasWon = true
             winners.add(word.role.id)
         } else {
