@@ -5,7 +5,6 @@ INSERT INTO word_pairs values (5, 'elephant','girafe');
 INSERT INTO word_pairs values (6, 'week-end','vacances');
 INSERT INTO word_pairs values (7, 'mer','piscine');
 INSERT INTO word_pairs values (8, 'cidre','bière');
-INSERT INTO word_pairs values (9, 'calin','bisous');
 INSERT INTO word_pairs values (10, 'confinement','virus');
 INSERT INTO word_pairs values (11, 'chine','hong-kong');
 INSERT INTO word_pairs values (12, 'avion','bateau');
