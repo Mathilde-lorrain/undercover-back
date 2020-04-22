@@ -75,7 +75,7 @@ open class TurnServiceImpl(
         val alive = roles.filter { r -> r.alive }
         val aliveDistinct = alive.distinctBy { r -> r.roleType }
         val roleTypeWinners = aliveDistinct.filter { r -> r.roleType.hasWon(roles) }.map { r -> r.roleType }
-        return alive.filter { r -> roleTypeWinners.contains(r.roleType) }.toMutableList()
+        return roles.filter { r -> roleTypeWinners.contains(r.roleType) }.toMutableList()
     }
 
     private fun getEliminatedPlayer(votes: MutableList<Vote>): Role {
