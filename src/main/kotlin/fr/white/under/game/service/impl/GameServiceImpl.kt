@@ -26,7 +26,7 @@ open class GameServiceImpl(private val gameDao: GameDao, private val turnService
     @Transactional
     override fun init(gameId: Long): Game {
         val game = findById(gameId)
-        if(game.roles.size < 3){
+        if (game.roles.size < 3) {
             TODO("Not enough players !!")
         }
         game.status = GameStatus.PLAYING
@@ -43,16 +43,20 @@ open class GameServiceImpl(private val gameDao: GameDao, private val turnService
             role.roleType = defaultRoles[i]
         }
         game.roles.shuffle()
-        if(game.roles[0].roleType == RoleType.MISTERWHITE)
-        {
+        if (game.roles[0].roleType == RoleType.MISTERWHITE) {
             val misterWhite = game.roles.removeAt(0)
             game.roles.add(Random.nextInt(1, game.roles.size + 1), misterWhite)
         }
     }
 
     private fun giveWord(game: Game) {
-        val randomWord =  wordPairsService.findRandomOne()
-        game.civilWord = randomWord.word1
-        game.undercoverWord = randomWord.word2
+        val randomWord = wordPairsService.findRandomOne()
+        if ((game.id!! % 2).equals(0)) {
+            game.civilWord = randomWord.word1
+            game.undercoverWord = randomWord.word2
+        } else {
+            game.civilWord = randomWord.word2
+            game.undercoverWord = randomWord.word1
+        }
     }
 }
