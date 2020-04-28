@@ -11,6 +11,7 @@ import fr.white.under.turn.persistence.TurnDao
 import fr.white.under.turn.persistence.VoteDao
 import fr.white.under.turn.persistence.WordDao
 import fr.white.under.turn.presentation.NewTurnDto
+import java.text.Normalizer;
 import org.springframework.stereotype.Service
 import javax.persistence.EntityManager
 import javax.transaction.Transactional
@@ -58,12 +59,15 @@ open class TurnServiceImpl(
     override fun checkMWhiteWord(gameId: Long, word: Word): NewTurnDto {
         val game = gameDao.findById(gameId)
         val mrWhiteId = word.role.id
+        val mrWhiteWord = word.word.toLowerCase()
+        val mrWhiteWordWithS = mrWhiteWord.plus("s")
         val winners = mutableListOf<Long?>()
         val role = game.roles.filter { r ->r.id == mrWhiteId }
-        if (word.word.toLowerCase() == game.civilWord) {
+        if (stripAccents(mrWhiteWord) == stripAccents(game.civilWord) || stripAccents(mrWhiteWordWithS) == stripAccents(game.civilWord)) {
             role[0].hasWon = true
             winners.add(word.role.id)
-        } else {
+            word.word.toLowerCase().plus("s")
+        } else  {
             role[0].alive = false
             winners.addAll(getWinners(game.roles).map { r -> r.id }.toMutableList())
         }
@@ -85,4 +89,10 @@ open class TurnServiceImpl(
     override fun newTurn(gameId: Long, turnNumber: Int): Turn {
         return save(Turn(null, turnNumber, game = entityManager.getReference(Game::class.java, gameId), killedPlayer = null))
     }
+    private fun stripAccents(s : String): String? {
+        var s = Normalizer.normalize(s, Normalizer.Form.NFD);
+        s = s.replace("[\\p{InCombiningDiacriticalMarks}]".toRegex(), "");
+        return s;
+    }
+
 }

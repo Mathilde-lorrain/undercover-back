@@ -4,6 +4,7 @@ import fr.white.under.game.persistence.WordPairsDao
 import fr.white.under.game.service.WordPairsService
 import fr.white.under.wordPairs.models.WordPairs
 import org.springframework.stereotype.Service
+import java.text.Normalizer
 
 @Service
 open class WordPairsServiceImpl(private val wordPairsDao: WordPairsDao) : WordPairsService {
@@ -17,6 +18,4 @@ open class WordPairsServiceImpl(private val wordPairsDao: WordPairsDao) : WordPa
         wordPairs.word2 = wordPairs.word2.toLowerCase()
         return wordPairsDao.save(wordPairs)
     }
-
-
 }
