@@ -16,10 +16,8 @@ class GameSocketController(val template: SimpMessagingTemplate, private val user
 
     @MessageMapping("/app/games/{gameId}/roles")
     fun onPlayerJoined(@DestinationVariable gameId: Long, role: Role) {
-        var game = gameService.findById(gameId)
         roleService.save(role)
         template.convertAndSend("/app/games/$gameId/users", userService.getNameById(role.user!!.id!!))
-        template.convertAndSend("/app/games/$gameId/initRole", game.roles.map{ r -> r.user!!.name})
     }
 
     @MessageMapping("/app/games/{gameId}")
