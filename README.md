@@ -1,5 +1,3 @@
-###UNDERCOVER BACK
-
 # Undercover back
 
 Ce projet a pour but de pouvoir jouer en ligne sur undercover
