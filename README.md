@@ -8,7 +8,4 @@ Le projet utilise :
 - Maven 3.6.3
 - Kotlin 1.3.72
 
-**Pour lancer le projet en local,
-il faut modifier le envSample en .env 
-
-Ensuite faire un docker-compose up
+Pour lancer le projet en local, il faut modifier le envSample en .env et ensuite faire un docker-compose up
