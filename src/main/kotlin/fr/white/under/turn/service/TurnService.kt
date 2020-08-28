@@ -1,5 +1,6 @@
 package fr.white.under.turn.service
 
+import fr.white.under.game.models.Game
 import fr.white.under.turn.models.Turn
 import fr.white.under.turn.models.Vote
 import fr.white.under.turn.models.Word
@@ -11,4 +12,5 @@ interface TurnService {
     fun save(turn: Turn): Turn
     fun endTurn(turnId: Long): NewTurnDto
     fun newTurn(gameId: Long, turnNumber: Int): Turn
+    fun checkMWhiteWord(gameId: Long, word: Word): NewTurnDto
 }

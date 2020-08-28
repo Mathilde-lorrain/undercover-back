@@ -1,9 +1,7 @@
 package fr.white.under.turn.service
 
-import com.fasterxml.jackson.annotation.JsonView
 import fr.white.under.game.models.Game
 import fr.white.under.game.persistence.GameDao
-import fr.white.under.game.service.GameService
 import fr.white.under.role.models.Role
 import fr.white.under.role.models.RoleType
 import fr.white.under.turn.models.Turn
@@ -13,6 +11,7 @@ import fr.white.under.turn.persistence.TurnDao
 import fr.white.under.turn.persistence.VoteDao
 import fr.white.under.turn.persistence.WordDao
 import fr.white.under.turn.presentation.NewTurnDto
+import java.text.Normalizer;
 import org.springframework.stereotype.Service
 import javax.persistence.EntityManager
 import javax.transaction.Transactional
@@ -22,6 +21,7 @@ open class TurnServiceImpl(
         private val turnDao: TurnDao,
         private val wordDao: WordDao,
         private val voteDao: VoteDao,
+        private val gameDao: GameDao,
         private val entityManager: EntityManager
 ) : TurnService {
     override fun save(word: Word): Word {
@@ -41,23 +41,45 @@ open class TurnServiceImpl(
         val turn = turnDao.findById(turnId)
 
         val killedPlayer = getEliminatedPlayer(turn.votes)
-        killedPlayer.alive = false
+        if (killedPlayer.roleType != RoleType.MISTERWHITE) {
+            killedPlayer.alive = false
+        }
         turn.killedPlayer = killedPlayer
 
-        val winners = getWinnersPlayer(turn.game!!.roles)
+        val winners = getWinners(turn.game!!.roles)
+        winners.forEach { w -> w.hasWon = true }
 
-        val newTurn = newTurn(turn.game!!.id!!, turn.turnNumber + 1)
+        val newTurn = newTurn(turn.game.id!!, turn.turnNumber + 1)
         val turnWinnersId = winners.map { r -> r.id }.toMutableList()
 
         return NewTurnDto(killedPlayer.id!!, newTurn.id!!, turnWinnersId)
     }
 
+    @Transactional
+    override fun checkMWhiteWord(gameId: Long, word: Word): NewTurnDto {
+        val game = gameDao.findById(gameId)
+        val mrWhiteId = word.role.id
+        val mrWhiteWord = word.word.toLowerCase()
+        val mrWhiteWordWithS = mrWhiteWord.plus("s")
+        val winners = mutableListOf<Long?>()
+        val role = game.roles.filter { r ->r.id == mrWhiteId }
+        if (stripAccents(mrWhiteWord) == stripAccents(game.civilWord) || stripAccents(mrWhiteWordWithS) == stripAccents(game.civilWord)) {
+            role[0].hasWon = true
+            winners.add(word.role.id)
+            word.word.toLowerCase().plus("s")
+        } else  {
+            role[0].alive = false
+            winners.addAll(getWinners(game.roles).map { r -> r.id }.toMutableList())
+        }
+        return NewTurnDto(null, word.turn.id!!, winners);
+    }
 
-    private fun getWinnersPlayer(roles : MutableList<Role>): MutableList<Role> {
-        var alive = roles.filter { r -> r.alive }
-        var aliveDistinct = alive.distinctBy { r -> r.roleType }
-        var roleTypeWinners = aliveDistinct.filter { r -> r.roleType.hasWon(roles) }.map { r -> r.roleType }
-        return alive.filter { r -> roleTypeWinners.contains(r.roleType)}.toMutableList()
+
+    private fun getWinners(roles: MutableList<Role>): MutableList<Role> {
+        val alive = roles.filter { r -> r.alive }
+        val aliveDistinct = alive.distinctBy { r -> r.roleType }
+        val roleTypeWinners = aliveDistinct.filter { r -> r.roleType.hasWon(roles) }.map { r -> r.roleType }
+        return roles.filter { r -> roleTypeWinners.contains(r.roleType) }.toMutableList()
     }
 
     private fun getEliminatedPlayer(votes: MutableList<Vote>): Role {
@@ -67,4 +89,10 @@ open class TurnServiceImpl(
     override fun newTurn(gameId: Long, turnNumber: Int): Turn {
         return save(Turn(null, turnNumber, game = entityManager.getReference(Game::class.java, gameId), killedPlayer = null))
     }
+    private fun stripAccents(s : String): String? {
+        var s = Normalizer.normalize(s, Normalizer.Form.NFD);
+        s = s.replace("[\\p{InCombiningDiacriticalMarks}]".toRegex(), "");
+        return s;
+    }
+
 }

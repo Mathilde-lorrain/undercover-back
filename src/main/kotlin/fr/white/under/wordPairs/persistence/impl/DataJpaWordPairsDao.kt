@@ -8,5 +8,4 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface DataJpaWordPairsDao : WordPairsDao, JpaRepository<WordPairs, Long>, JpaSpecificationExecutor<WordPairs> {
-
 }
